@@ -1,119 +1,67 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react'
-import { SkillBadge } from '@/components/skill-badge'
-import { Code2, BrainCircuit, Layers } from 'lucide-react'
+import { BrainCircuit, Code2, Compass } from "lucide-react"
+import { Reveal } from "@/components/reveal"
+import { SKILL_GROUPS } from "@/lib/portfolio-data"
 
-const Skill = () => {
-  const skillsRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-  
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: <Code2 className="h-5 w-5 text-blue-500" />,
-      skills: ["React.js", "Next.js", "JavaScript", "TypeScript", "HTML5", "CSS3", "Tailwind CSS", "Redux"]
-    },
-    {
-      title: "Backend",
-      icon: <BrainCircuit className="h-5 w-5 text-green-500" />,
-      skills: ["Node.js", "Express.js", "RESTful APIs", "MongoDB", "Firebase"]
-    },
-    {
-      title: "Tools & Others",
-      icon: <Layers className="h-5 w-5 text-purple-500" />,
-      skills: ["Git", "GitHub", "VS Code", "Figma", "Responsive Design", "Webpack"]
-    }
-  ];
+const ICONS = {
+  frontend: Code2,
+  engineering: BrainCircuit,
+  workflow: Compass,
+} as const
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (skillsRef.current) {
-      observer.observe(skillsRef.current);
-    }
-
-    return () => {
-      if (skillsRef.current) {
-        observer.unobserve(skillsRef.current);
-      }
-    };
-  }, []);
-
+export default function Skill() {
   return (
-    <section id='skills' className="w-full py-12 md:py-24 lg:py-32 bg-slate-50 dark:bg-slate-900/30">
-      <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-8 text-center">
-          <div className="space-y-3 max-w-3xl">
-            <div className="inline-block rounded-lg bg-blue-100 dark:bg-blue-900/30 px-4 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-300">
-              Technical Expertise
-            </div>
-            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-slate-800 to-slate-600 dark:from-slate-200 dark:to-slate-400 bg-clip-text text-transparent">
-              My Technical Skills
-            </h2>
-            <p className="mx-auto max-w-[700px] text-gray-600 md:text-lg dark:text-gray-400">
-              Here are the technologies and tools I've mastered throughout my development journey
-            </p>
+    <section id="skills" className="border-b border-border/50 bg-background py-20 md:py-28">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <div className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-medium text-cyan-500">
+            02 // TECHNICAL STACK
           </div>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">
+            Skills &amp; Engineering Toolkit
+          </h2>
+          <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+            Modern frontend frameworks paired with API integration, clean state architecture, and Agile delivery.
+          </p>
+        </Reveal>
 
-          <div ref={skillsRef} className="w-full max-w-4xl">
-            {skillCategories.map((category, index) => (
-              <div 
-                key={category.title}
-                className={`mb-12 transition-all duration-1000 ${
-                  isVisible 
-                    ? 'opacity-100 translate-y-0' 
-                    : 'opacity-0 translate-y-12'
-                }`}
-                style={{ 
-                  transitionDelay: `${index * 200}ms`
-                }}
-              >
-                <div className="flex items-center justify-center gap-2 mb-6">
-                  {category.icon}
-                  <h3 className="text-xl font-semibold">{category.title}</h3>
-                </div>
-                
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
-                  {category.skills.map((skill, skillIndex) => (
-                    <div 
-                      key={skill}
-                      className={`transition-all duration-500 ${
-                        isVisible 
-                          ? 'opacity-100 translate-y-0' 
-                          : 'opacity-0 translate-y-8'
-                      }`}
-                      style={{ 
-                        transitionDelay: `${(index * 200) + (skillIndex * 100)}ms`
-                      }}
-                    >
-                      <SkillBadge name={skill} />
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          {SKILL_GROUPS.map((group, idx) => {
+            const Icon = ICONS[group.id as keyof typeof ICONS] ?? Code2
+            return (
+              <Reveal key={group.id} delay={idx * 120} className="h-full">
+                <div className="flex h-full flex-col rounded-3xl border border-border/70 bg-card/70 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-500/25 bg-cyan-500/10 text-cyan-500">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold">{group.title}</h3>
                     </div>
-                  ))}
+                  </div>
+
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{group.description}</p>
+
+                  <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
+                    {group.items.map((item) => (
+                      <div
+                        key={item.name}
+                        className="group/item flex items-center justify-between rounded-xl border border-border/60 bg-background/70 px-3.5 py-2.5 transition-all duration-200 hover:translate-x-1 hover:border-cyan-500/40"
+                      >
+                        <span className="text-sm font-medium">{item.name}</span>
+                        <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[11px] text-muted-foreground group-hover/item:text-cyan-500">
+                          {item.level}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className={`mt-8 transition-all duration-1000 delay-1000 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}>
-            <p className="text-sm text-gray-500 dark:text-gray-400 italic">
-              Continuously learning and expanding my skill set with modern technologies
-            </p>
-          </div>
+              </Reveal>
+            )
+          })}
         </div>
       </div>
     </section>
   )
 }
-
-export default Skill

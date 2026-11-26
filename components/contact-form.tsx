@@ -1,31 +1,18 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Send, User, Mail, MessageSquare, Loader2, X } from "lucide-react"
-
+import type React from "react"
+import { useState } from "react"
+import { CheckCircle2, Loader2, Mail, MessageSquare, Send, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { PROFILE } from "@/lib/portfolio-data"
 
-// Simple classnames utility function
-const cn = (...classes) => classes.filter(Boolean).join(" ")
-
-// Custom toast component
-function Toast({ title, description, variant, onClose }) {
-  return (
-    <div className={`fixed bottom-4 right-4 max-w-sm w-full rounded-lg shadow-lg p-4 flex items-start space-x-3 transition-all duration-300 transform translate-y-0 ${
-      variant === "destructive" ? "bg-red-100 text-red-900 border border-red-200" : "bg-green-100 text-green-900 border border-green-200"
-    }`}>
-      <div className="flex-1">
-        <h3 className="font-medium">{title}</h3>
-        {description && <p className="text-sm mt-1 opacity-90">{description}</p>}
-      </div>
-      <button onClick={onClose} className="flex-shrink-0">
-        <X size={18} />
-      </button>
-    </div>
-  )
+interface ToastState {
+  title: string
+  description: string
+  variant: "success" | "destructive"
 }
 
 export function ContactForm() {
@@ -33,56 +20,47 @@ export function ContactForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    subject: "",
     message: "",
   })
-  const [focused, setFocused] = useState(null)
-  const [toast, setToast] = useState(null)
+  const [toast, setToast] = useState<ToastState | null>(null)
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleFocus = (name) => {
-    setFocused(name)
-  }
-
-  const handleBlur = () => {
-    setFocused(null)
-  }
-
-  const showToast = ({ title, description, variant }) => {
-    setToast({ title, description, variant })
-    
-    // Auto-dismiss after 5 seconds
+  const showToast = (nextToast: ToastState) => {
+    setToast(nextToast)
     setTimeout(() => {
       setToast(null)
     }, 5000)
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
-      // Simulate form submission
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 600))
+      const mailSubject = encodeURIComponent(
+        formData.subject.trim() || `Portfolio Inquiry from ${formData.name}`
+      )
+      const mailBody = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`
+      )
+      window.location.href = `mailto:${PROFILE.email}?subject=${mailSubject}&body=${mailBody}`
 
       showToast({
-        title: "Message sent!",
-        description: "Thank you for your message. I'll get back to you soon.",
+        title: "Opening your email client",
+        description: `Your message to ${PROFILE.email} is ready to send.`,
+        variant: "success",
       })
-
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      })
-    } catch (error) {
+      setFormData({ name: "", email: "", subject: "", message: "" })
+    } catch {
       showToast({
-        title: "Something went wrong",
-        description: "Your message couldn't be sent. Please try again.",
+        title: "Could not open email client",
+        description: `Please reach out directly at ${PROFILE.email}.`,
         variant: "destructive",
       })
     } finally {
@@ -91,99 +69,129 @@ export function ContactForm() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto ">
-      <div className="bg-muted/50 rounded-lg shadow-lg p-6 border border-slate-200 dark:border-slate-700">
-        <h2 className="text-2xl font-bold mb-6 text-center">Get In Touch</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="relative">
-            <div className={cn(
-              "absolute left-3 top-3 text-slate-400 transition-all duration-200",
-              focused === "name" && "text-blue-500"
-            )}>
-              <User size={18} />
+    <div className="rounded-3xl border border-border/70 bg-card/80 p-6 shadow-sm sm:p-8">
+      <div className="mb-6">
+        <h3 className="text-xl font-bold">Send a Message</h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Have a frontend role, product idea, or collaboration in mind? Drop a note below.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label htmlFor="name" className="text-xs font-medium">
+              Your Name
+            </Label>
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="name"
+                name="name"
+                placeholder="Jane Doe"
+                value={formData.name}
+                onChange={handleChange}
+                className="h-11 rounded-xl pl-9"
+                required
+              />
             </div>
-            <Input 
-              id="name" 
-              name="name" 
-              placeholder="Your name" 
-              value={formData.name} 
-              onChange={handleChange}
-              onFocus={() => handleFocus("name")}
-              onBlur={handleBlur}
-              className="pl-10 h-12 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:border-blue-500" 
-              required 
-            />
           </div>
-          
-          <div className="relative">
-            <div className={cn(
-              "absolute left-3 top-3 text-slate-400 transition-all duration-200",
-              focused === "email" && "text-blue-500"
-            )}>
-              <Mail size={18} />
+
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-xs font-medium">
+              Email Address
+            </Label>
+            <div className="relative">
+              <Mail className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="jane@company.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="h-11 rounded-xl pl-9"
+                required
+              />
             </div>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Your email"
-              value={formData.email}
-              onChange={handleChange}
-              onFocus={() => handleFocus("email")}
-              onBlur={handleBlur}
-              className="pl-10 h-12 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:border-blue-500"
-              required
-            />
           </div>
-          
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="subject" className="text-xs font-medium">
+            Subject
+          </Label>
+          <Input
+            id="subject"
+            name="subject"
+            placeholder="Software Engineering Role / Project Inquiry"
+            value={formData.subject}
+            onChange={handleChange}
+            className="h-11 rounded-xl"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="message" className="text-xs font-medium">
+            Message
+          </Label>
           <div className="relative">
-            <div className={cn(
-              "absolute left-3 top-3 text-slate-400 transition-all duration-200",
-              focused === "message" && "text-blue-500"
-            )}>
-              <MessageSquare size={18} />
-            </div>
+            <MessageSquare className="pointer-events-none absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
             <Textarea
               id="message"
               name="message"
-              placeholder="Your message"
+              placeholder="Tell me about your team, project scope, or timeline..."
               value={formData.message}
               onChange={handleChange}
-              onFocus={() => handleFocus("message")}
-              onBlur={handleBlur}
               required
-              className="pl-10 min-h-[150px] border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700/50 focus:border-blue-500 resize-none"
+              className="min-h-[130px] resize-none rounded-xl pl-9 pt-3"
             />
           </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:shadow-md" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                Send Message
-                <Send className="ml-2 h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </form>
-      </div>
-      
+        </div>
+
+        <Button
+          type="submit"
+          size="lg"
+          disabled={isSubmitting}
+          className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-md shadow-cyan-500/20 hover:from-cyan-400 hover:to-indigo-500"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Preparing...
+            </>
+          ) : (
+            <>
+              Send Message
+              <Send className="ml-2 h-4 w-4" />
+            </>
+          )}
+        </Button>
+      </form>
+
       {toast && (
-        <Toast 
-          title={toast.title}
-          description={toast.description}
-          variant={toast.variant}
-          onClose={() => setToast(null)}
-        />
+        <div
+          role="status"
+          className={`fixed bottom-5 right-5 z-50 flex max-w-sm items-start gap-3 rounded-2xl border p-4 shadow-xl backdrop-blur-md ${
+            toast.variant === "destructive"
+              ? "border-rose-500/30 bg-rose-950/90 text-rose-100"
+              : "border-emerald-500/30 bg-slate-900/95 text-slate-100"
+          }`}
+        >
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+          <div className="flex-1 text-sm">
+            <p className="font-semibold">{toast.title}</p>
+            <p className="mt-0.5 text-xs opacity-85">{toast.description}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToast(null)}
+            className="text-slate-400 hover:text-white"
+            aria-label="Close notification"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       )}
     </div>
   )

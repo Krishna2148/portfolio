@@ -1,67 +1,52 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
 import { ProjectCard } from "@/components/project-card"
+import { Button } from "@/components/ui/button"
+import { PROFILE, PROJECTS } from "@/lib/portfolio-data"
+
+export const metadata: Metadata = {
+  title: "Projects & Case Studies",
+  description: `Explore production web applications and frontend systems built by ${PROFILE.name} using React.js, Next.js, Redux, and Tailwind CSS.`,
+  alternates: {
+    canonical: "/projects",
+  },
+}
 
 export default function ProjectsPage() {
   return (
-    <div className="container px-4 py-12 md:px-6 md:py-24">
-      <div className="flex flex-col items-start space-y-4">
-        <Button variant="ghost" asChild className="mb-4">
-          <Link href="/">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
-          </Link>
-        </Button>
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">My Projects</h1>
-        <p className="text-gray-500 md:text-xl dark:text-gray-400">
-          A collection of my work, side projects, and experiments
-        </p>
-      </div>
+    <div className="flex min-h-screen flex-col">
+      <Navbar />
+      <main className="flex-1 bg-background py-14 md:py-20">
+        <div className="container mx-auto max-w-6xl px-4 md:px-6">
+          <Button variant="ghost" asChild className="mb-6 -ml-3 rounded-full">
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
+            </Link>
+          </Button>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        <ProjectCard
-          title="E-commerce Website"
-          description="A full-featured online store built with Next.js, featuring product listings, cart functionality, and secure checkout."
-          tags={["Next.js", "React", "Tailwind CSS", "Stripe"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/ecommerce"
-        />
-        <ProjectCard
-          title="Task Management App"
-          description="A productivity application that helps users organize tasks, set priorities, and track progress."
-          tags={["React", "Redux", "Node.js", "MongoDB"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/task-manager"
-        />
-        <ProjectCard
-          title="Portfolio Website"
-          description="A responsive portfolio website showcasing my work and skills, built with Next.js and Tailwind CSS."
-          tags={["Next.js", "Tailwind CSS", "Framer Motion"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/portfolio"
-        />
-        <ProjectCard
-          title="Weather Dashboard"
-          description="A weather application that provides real-time weather data and forecasts for locations worldwide."
-          tags={["React", "API Integration", "Chart.js"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/weather-dashboard"
-        />
-        <ProjectCard
-          title="Blog Platform"
-          description="A content management system for creating and managing blog posts with user authentication."
-          tags={["Next.js", "Node.js", "MongoDB", "Auth"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/blog-platform"
-        />
-        <ProjectCard
-          title="Social Media Dashboard"
-          description="An analytics dashboard for tracking social media performance across multiple platforms."
-          tags={["React", "D3.js", "API Integration"]}
-          imageUrl="/placeholder.svg?height=200&width=300"
-          projectUrl="/projects/social-dashboard"
-        />
-      </div>
+          <div className="max-w-2xl space-y-3">
+            <div className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-medium text-cyan-500">
+              PORTFOLIO ARCHIVE
+            </div>
+            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
+              Shipped Products &amp; Case Studies
+            </h1>
+            <p className="text-base text-muted-foreground sm:text-lg">
+              Production web platforms and frontend systems engineered across enterprise SaaS, healthcare, library operations, fitness, and hospitality.
+            </p>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {PROJECTS.map((project) => (
+              <ProjectCard key={project.slug} project={project} />
+            ))}
+          </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   )
 }

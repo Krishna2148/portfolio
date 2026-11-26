@@ -1,124 +1,106 @@
-import Image from 'next/image'
-import React, { useEffect, useRef } from 'react'
+"use client"
 
-const About = () => {
-  const profileRef = useRef(null);
-  const textContentRef = useRef(null);
-  
-  useEffect(() => {
-    // Simple animation on component mount
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          if (entry.target === profileRef.current) {
-            entry.target.classList.add('scale-100', 'opacity-100');
-            entry.target.classList.remove('scale-95', 'opacity-0');
-          }
-          if (entry.target === textContentRef.current) {
-            entry.target.classList.add('translate-y-0', 'opacity-100');
-            entry.target.classList.remove('translate-y-8', 'opacity-0');
-          }
-        }
-      });
-    }, { threshold: 0.1 });
-    
-    if (profileRef.current) observer.observe(profileRef.current);
-    if (textContentRef.current) observer.observe(textContentRef.current);
-    
-    return () => {
-      if (profileRef.current) observer.unobserve(profileRef.current);
-      if (textContentRef.current) observer.unobserve(textContentRef.current);
-    };
-  }, []);
+import Image from "next/image"
+import { Layers, Rocket, ShieldCheck } from "lucide-react"
+import { Reveal } from "@/components/reveal"
+import { LiveExperienceCounter } from "@/components/live-experience"
+import { PROFILE } from "@/lib/portfolio-data"
 
+const PILLARS = [
+  {
+    icon: Layers,
+    title: "Clean Architecture",
+    detail: "Modular React & Next.js components with predictable Redux state and reusable UI primitives.",
+  },
+  {
+    icon: Rocket,
+    title: "Performance First",
+    detail: "Fast rendering, responsive layouts, and thoughtful optimization across desktop and mobile.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Team & Delivery",
+    detail: "Mentoring interns, Agile sprint execution, and smooth REST API integration with backend teams.",
+  },
+]
+
+export default function About() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
-      <div className="container px-4 md:px-10 max-w-6xl mx-auto">
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
-          {/* Left column - Profile image with decorative elements */}
-          <div className="flex justify-center order-2 lg:order-1">
-            <div 
-              ref={profileRef} 
-              className="relative transform scale-95 opacity-0 transition-all duration-1000 ease-out"
-            >
-              {/* Background decorative element */}
-              <div className="absolute -left-6 -top-6 w-full h-full bg-blue-500 rounded-xl rotate-3"></div>
-              
-              {/* Profile image container */}
-              <div className="relative w-[280px] h-[320px] sm:w-[320px] sm:h-[400px] md:w-[400px] md:h-[500px] overflow-hidden rounded-xl shadow-xl border-4 border-white dark:border-slate-800 z-10">
+    <section id="about" className="border-b border-border/50 bg-muted/20 py-20 md:py-28">
+      <div className="container mx-auto max-w-6xl px-4 md:px-6">
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Portrait Column */}
+          <Reveal direction="left" className="order-2 lg:order-1 lg:col-span-5">
+            <div className="relative mx-auto max-w-sm">
+              <div className="absolute -bottom-4 -right-4 h-full w-full rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-cyan-500/10 to-indigo-500/10" />
+              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/80 bg-card shadow-xl">
                 <Image
-                  src="/profile.jfif"
-                  alt="Your Name"
+                  src={PROFILE.aboutImage}
+                  alt={`${PROFILE.name} portrait`}
                   fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover object-top transition-transform duration-700 hover:scale-[1.03]"
+                  sizes="(max-width: 1024px) 90vw, 400px"
                 />
-                
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/30 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
               </div>
-              
-              {/* Experience badge */}
-              <div className="absolute -right-8 top-10 bg-white dark:bg-slate-800 rounded-full py-3 px-6 shadow-lg z-20 flex items-center gap-2">
-                <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">2+</div>
-                <div>
-                  <div className="text-sm font-semibold">Years of</div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">Experience</div>
-                </div>
+
+              <div className="animate-float absolute -left-3 top-6 rounded-2xl border border-border/80 bg-card/95 px-4 py-3 shadow-lg backdrop-blur">
+                <p className="font-mono text-xs text-muted-foreground">Degree</p>
+                <p className="text-sm font-bold">BIT · Purbanchal Univ.</p>
               </div>
-              
-              {/* Tech stack pills */}
-              <div className="absolute -left-4 -bottom-4 bg-white dark:bg-slate-800 rounded-lg py-2 px-4 shadow-lg z-20">
-                <div className="flex gap-2">
-                  <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-1 rounded-full">React.js</span>
-                  <span className="bg-black text-white text-xs px-2 py-1 rounded-full">Next.js</span>
-                  <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs px-2 py-1 rounded-full">Node.js</span>
-                </div>
+
+              <div className="animate-float-delayed absolute -bottom-3 left-4 rounded-2xl border border-emerald-500/30 bg-card/95 px-3.5 py-2 shadow-lg backdrop-blur">
+                <LiveExperienceCounter compact />
               </div>
             </div>
-          </div>
-          
-          {/* Right column - Text content */}
-          <div 
-            ref={textContentRef} 
-            className="space-y-6 order-1 lg:order-2 transform translate-y-8 opacity-0 transition-all duration-1000 ease-out delay-300"
-          >
-            <div className="inline-block rounded-lg bg-blue-100 dark:bg-blue-900/30 px-4 py-1.5 text-sm font-medium text-blue-700 dark:text-blue-300">About Me</div>
-            
-            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-              Crafting Seamless Digital Experiences with Code & Creativity
+          </Reveal>
+
+          {/* Copy Column */}
+          <Reveal direction="right" delay={120} className="order-1 space-y-6 lg:order-2 lg:col-span-7">
+            <div className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-medium text-cyan-500">
+              01 // ABOUT ME
+            </div>
+
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Turning complex workflows into intuitive, responsive interfaces.
             </h2>
-            
-            <div className="space-y-6">
-              <p className="text-gray-700 md:text-lg leading-relaxed dark:text-gray-300">
-                I'm a passionate <span className="font-semibold text-blue-600 dark:text-blue-400">Software Engineer</span> who thrives on transforming ideas into interactive, user-friendly web experiences. With a strong command of React.js, Next.js, and Node.js, I focus on writing clean, scalable, and performant code that brings designs to life.
-              </p>
-              
-              <p className="text-gray-700 md:text-lg leading-relaxed dark:text-gray-300">
-                My journey into web development began with a deep curiosity for how websites work—and quickly turned into a lifelong passion. From building sleek interfaces for startups to developing dynamic applications, I've consistently delivered elegant solutions with a focus on usability and performance.
-              </p>
+
+            <div className="space-y-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {PROFILE.aboutParagraphs.map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
             </div>
-            
-            {/* Stats section */}
-            <div className="grid grid-cols-3 gap-4 pt-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">20+</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Projects Completed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">15+</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Happy Clients</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">99%</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400">Client Satisfaction</div>
-              </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              {PROFILE.stats.map((stat, idx) => (
+                <Reveal key={stat.label} delay={idx * 90} direction="scale">
+                  <div className="rounded-2xl border border-border/70 bg-card/80 p-4 text-center shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:border-cyan-500/40">
+                    <div className="text-2xl font-extrabold text-cyan-500 sm:text-3xl">{stat.value}</div>
+                    <div className="mt-1 text-xs font-medium text-muted-foreground sm:text-sm">{stat.label}</div>
+                  </div>
+                </Reveal>
+              ))}
             </div>
-          </div>
+
+            {/* Engineering Pillars */}
+            <div className="grid gap-3 pt-2 sm:grid-cols-3">
+              {PILLARS.map((pillar, idx) => {
+                const Icon = pillar.icon
+                return (
+                  <Reveal key={pillar.title} delay={150 + idx * 90}>
+                    <div className="h-full rounded-2xl border border-border/60 bg-card/60 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/40">
+                      <Icon className="mb-2.5 h-5 w-5 text-cyan-500" />
+                      <h3 className="text-sm font-semibold">{pillar.title}</h3>
+                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{pillar.detail}</p>
+                    </div>
+                  </Reveal>
+                )
+              })}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
   )
 }
-
-export default About

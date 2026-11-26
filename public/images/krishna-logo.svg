@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 72" fill="none">
+  <defs>
+    <linearGradient id="logo-bg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#070C1B" />
+      <stop offset="60%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#172042" />
+    </linearGradient>
+    <linearGradient id="logo-grad" x1="12" y1="14" x2="52" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22D3EE" />
+      <stop offset="55%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(4, 4)">
+    <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#logo-bg)" />
+    <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="15.25" stroke="url(#logo-grad)" stroke-width="1.75" stroke-opacity="0.65" />
+    <rect x="14.5" y="18" width="4.6" height="28" rx="2.3" fill="url(#logo-grad)" />
+    <path d="M29.8 20L21.5 32L30.2 44" stroke="url(#logo-grad)" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M36 20H41.6C44.9 20 47.1 22 47.1 25.1C47.1 27.7 45.4 29.5 42.8 30.2C45.9 30.9 48 33.1 48 36.4C48 40.5 45.2 44 41.2 44H36V20Z" stroke="#F8FAFC" stroke-width="3.9" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M36 30.8H42.6" stroke="#F8FAFC" stroke-width="3.4" stroke-linecap="round" />
+    <circle cx="51" cy="13.5" r="2.5" fill="#10B981" />
+  </g>
+  <text x="86" y="36" font-family="Segoe UI, Arial, sans-serif" font-size="26" font-weight="800" fill="#F8FAFC">
+    Krishna <tspan fill="url(#logo-grad)">Bhatt</tspan>
+  </text>
+  <circle cx="90" cy="52" r="3" fill="#06B6D4" />
+  <text x="100" y="56" font-family="Consolas, monospace" font-size="12" font-weight="600" letter-spacing="1.8" fill="#94A3B8">
+    SOFTWARE ENGINEER
+  </text>
+</svg>
